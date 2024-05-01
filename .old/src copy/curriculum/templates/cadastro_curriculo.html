@@ -1,0 +1,36 @@
+<!-- No arquivo signup.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Curriculo</title>
+</head>
+<body>
+    <h2>Cadastro de Currículo</h2>
+
+    <!-- Botão para ir para a página de login -->
+    <a href="{% url 'home' %}"><button>Homepage</button></a>
+
+    <form method="post">
+        {% csrf_token %}
+
+        <h3>Usuário</h3>
+        {{ user_form.as_p }}
+
+        <h3>Perfilonline</h3>
+        {{ link_form.as_p }}
+
+        <h3>Experiencia</h3>
+        {{ experience_form.as_p }}
+
+        <h3>Educação</h3>
+        {{ education_form.as_p }}
+
+        <h3>Habilidades</h3>
+        {{ skill_form.as_p }}
+        
+        <button type="submit">Enviar</button>
+    </form>
+</body>
+</html>

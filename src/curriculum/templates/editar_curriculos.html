@@ -1,0 +1,73 @@
+<!-- No arquivo signup.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Currículos</title>
+</head>
+<body>
+    <h2>Editar Currículos</h2>
+
+    <!-- Botão para ir para a página de login -->
+    <a href="{% url 'home' %}"><button>Homepage</button></a>
+
+    <h1>{{ curriculo.name }}</h1>
+    
+    <h2>Dados Pessoais</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ user_form.as_p }}
+        <button type="submit">Salvar</button>
+    </form>
+
+    <h2>Links</h2>
+    <ul>
+        {% for link in links %}
+            <li>{{ link.name }}: {{ link.url }}</li>
+        {% endfor %}
+    </ul>
+    <form method="post">
+        {% csrf_token %}
+        {{ link_form.as_p }}
+        <button type="submit">Adicionar Link</button>
+    </form>
+
+    <h2>Experiências Profissionais</h2>
+    <ul>
+        {% for experience in experiences %}
+            <li>{{ experience.company }} - {{ experience.position }} ({{ experience.period }}): {{ experience.description }}</li>
+        {% endfor %}
+    </ul>
+    <form method="post">
+        {% csrf_token %}
+        {{ experience_form.as_p }}
+        <button type="submit">Adicionar Experiência</button>
+    </form>
+
+    <h2>Educação</h2>
+    <ul>
+        {% for education in educations %}
+            <li>{{ education.institution }} - {{ education.course }} ({{ education.period }}): {{ education.description }}</li>
+        {% endfor %}
+    </ul>
+    <form method="post">
+        {% csrf_token %}
+        {{ education_form.as_p }}
+        <button type="submit">Adicionar Educação</button>
+    </form>
+
+    <h2>Habilidades</h2>
+    <ul>
+        {% for skill in skills %}
+            <li>{{ skill.name }}</li>
+        {% endfor %}
+    </ul>
+    <form method="post">
+        {% csrf_token %}
+        {{ skill_form.as_p }}
+        <button type="submit">Adicionar Habilidade</button>
+    </form>
+
+</body>
+</html>

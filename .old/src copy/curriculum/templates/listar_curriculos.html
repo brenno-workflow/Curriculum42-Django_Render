@@ -1,0 +1,28 @@
+<!-- No arquivo signup.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Currículos</title>
+</head>
+<body>
+    <h2>Lista de Currículos</h2>
+
+    <!-- Botão para ir para a página de login -->
+    <a href="{% url 'home' %}"><button>Homepage</button></a>
+
+    <ul>
+        {% for curriculo in curriculos %}
+        <li>
+            {{ curriculo.name }} - {{ curriculo.title }}
+            <!-- Adicionar um formulário com um botão para cada currículo -->
+                {% csrf_token %}
+                <button type="submit">Visualizar</button>
+            </form>
+        </li>
+        {% endfor %}
+    </ul>
+
+</body>
+</html>
