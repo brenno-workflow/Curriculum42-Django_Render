@@ -38,7 +38,7 @@ def signup(request):
             if not existing_credential:
 
                 # Criar um formulário com os dados recebidos
-                form = CredentialForm(name=name, email=email, password=password)
+                form = CredentialForm(data)
 
                 if form.is_valid():
 
@@ -60,7 +60,6 @@ def signup(request):
         else:
 
             errors = {
-                'name': [{'message': 'Este campo é obrigatório.', 'code': 'required'}] if not name else [],
                 'email': [{'message': 'Este campo é obrigatório.', 'code': 'required'}] if not email else [],
                 'password': [{'message': 'Este campo é obrigatório.', 'code': 'required'}] if not password else [],
             }
