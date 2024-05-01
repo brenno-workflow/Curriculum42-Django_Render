@@ -8,7 +8,7 @@ class CredentialForm(forms.ModelForm):
 
     class Meta:
         model = Credential  # Indica qual modelo será utilizado no formulário
-        fields = ['email', 'password']  # Define quais campos do modelo serão utilizados no formulário
+        fields = ['name', 'email', 'password']  # Define quais campos do modelo serão utilizados no formulário
 
 # O campo 'password' é definido separadamente para que possamos renderizá-lo como um campo de senha
 # Isso significa que a senha digitada pelo usuário será mascarada quando ele a digitar
