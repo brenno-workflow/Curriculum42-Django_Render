@@ -30,7 +30,7 @@ def signup(request):
         password = data.get('password')
 
         # Se ambos os campos estiverem presentes, continue com o processamento
-        if email and password:
+        if name and email and password:
 
             # Verificar se já existe uma credencial com o mesmo e-mail no banco de dados
             existing_credential = Credential.objects.filter(email=email).first()
