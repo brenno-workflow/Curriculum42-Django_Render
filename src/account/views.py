@@ -38,7 +38,7 @@ def signup(request):
             if not existing_credential:
 
                 # Criar um formulário com os dados recebidos
-                form = CredentialForm(name=name, email=email, password=password)
+                form = CredentialForm(data)
 
                 if form.is_valid():
 
