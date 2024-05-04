@@ -36,7 +36,9 @@ def create(request, id):
                     pronoun=user_data['pronoun'],
                     description=user_data['description'],
                     credential_id=credential_id,
-                    key=get_random_string(length=20)
+                    key=get_random_string(length=20),
+                    access_level=user_data['access_level'],
+                    published=user_data['published']
                 )
                 
                 # Crie os links
@@ -114,8 +116,9 @@ def update(request, id):
             user.gender = user_data['gender']
             user.pronoun = user_data['pronoun']
             user.description = user_data['description']
+            user.access_level=user_data['access_level']
+            user.published=user_data['published']
             user.save()
-            print('testeeeee')
 
             # Recuperar os IDs das entradas relacionadas
             #link_query = Link.objects.filter(user=user)
