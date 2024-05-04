@@ -503,8 +503,10 @@ def profile_key(request, id):
                 "id": user.id
             }
 
+            user_id = user_data.get('id')
+
             # Verificar se usuário tem permissão para alterações
-            if user.id == credential_id:
+            if user_id == credential_id:
                 user_admin = True
             else:
                 user_admin = False
