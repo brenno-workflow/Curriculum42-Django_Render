@@ -1,5 +1,5 @@
 # Criar um arquivo igual o 'urls.py' do projeto
-from django.urls import path
+from django.urls import path, re_path
 from . import views
 
 urlpatterns = [
@@ -10,6 +10,6 @@ urlpatterns = [
     path('accessLevel/<int:id>', views.accessLevel, name='accessLevel'),
     path('published/<int:id>', views.published, name='published'),
     path('profile/<int:id>', views.profile, name='profile'),
-    path('curriculum/profile_key/<int:id>/', views.profile_key, name='profile_by_key')
+    re_path('curriculum/profile_key/(?P<id>\d+)/$', views.profile_key, name='profile_by_key')
 ]
 
