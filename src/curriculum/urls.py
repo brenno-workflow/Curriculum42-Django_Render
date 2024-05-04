@@ -9,6 +9,7 @@ urlpatterns = [
     path('list/<int:id>', views.list, name='list'),
     path('accessLevel/<int:id>', views.accessLevel, name='accessLevel'),
     path('published/<int:id>', views.published, name='published'),
-    path('profile/<int:id>', views.profile, name='profile')
+    path('profile/<int:id>', views.profile, name='profile'),
+    path('curriculum/profile_key/<int:id>/', views.profile_key, name='profile_by_key')
 ]
 

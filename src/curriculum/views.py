@@ -461,3 +461,116 @@ def profile(request, id):
     
     else:
         return JsonResponse({'error': 'Perfil não existe.'}, status=405)
+
+@csrf_exempt
+def profile_key(request, id):
+
+    # Informar o metodo
+    if request.method == 'GET':
+
+        # Buscar a chave do curriculo
+        key = request.GET.get('key', None)
+
+        try:
+            # Obtém o usuário existente pelo ID fornecido na URL
+            credential_id = id
+
+            if key:
+
+                # Obtenha o usuário existente
+                user = User.objects.get(key=key)
+
+            else:
+                
+                # Obtenha o usuário existente
+                user = User.objects.get(credential_id=credential_id)
+            
+            user_data = {
+                "name": user.name,
+                "title": user.title,
+                "email": user.email,
+                "phone": user.phone,
+                "location": user.location,
+                "avatar": user.avatar,
+                "gender": user.gender,
+                "pronoun": user.pronoun,
+                "description": user.description,
+                "accessLevel": user.access_level,
+                "published": user.published,
+                "created_at": user.created_at,
+                "updated_at": user.updated_at,
+                "key": user.key,
+                "id": user.id
+            }
+
+            # Verificar se usuário tem permissão para alterações
+            if user.id == credential_id:
+                user_admin = True
+            else:
+                user_admin = False
+
+            links = Link.objects.filter(user=user)
+            links_data = [{"name": link.name, "url": link.url} for link in links]
+
+            experiences = Experience.objects.filter(user=user)
+            experiences_data = [{
+                "company": experience.company,
+                "position": experience.position,
+                "period": experience.period,
+                "description": experience.description
+            } for experience in experiences]
+
+            educations = Education.objects.filter(user=user)
+            educations_data = [{
+                "institution": education.institution,
+                "course": education.course,
+                "period": education.period,
+                "description": education.description
+            } for education in educations]
+
+            skills = Skill.objects.filter(user=user)
+            skills_data = [skill.name for skill in skills]
+
+            custom_data = []
+            graphics = Graphic.objects.filter(user=user)
+            for graphic in graphics:
+                custom_data.append({
+                    "title": graphic.title,
+                    "description": graphic.description,
+                    "topicType": {
+                        "type": graphic.type,
+                        "description": graphic.description,
+                        "percentage": graphic.percentage,
+                        "color": graphic.color
+                    }
+                })
+
+            topics = Topic.objects.filter(user=user)
+            for topic in topics:
+                custom_data.append({
+                    "title": topic.title,
+                    "description": topic.description,
+                    "topicType": {
+                        "type": topic.type,
+                        "topics": topic.topics
+                    }
+                })
+
+            response_data = {
+                "user": user_data,
+                "links": links_data,
+                "experience": experiences_data,
+                "education": educations_data,
+                "skills": skills_data,
+                "Custom": custom_data,
+                "user_admin": user_admin
+            }
+
+            return JsonResponse(response_data)
+        except User.DoesNotExist:
+            return JsonResponse({"error": "Only POST requests are allowed."}, status=404)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+    
+    else:
+        return JsonResponse({'error': 'Perfil não existe.'}, status=405)
