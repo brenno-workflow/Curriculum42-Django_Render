@@ -503,10 +503,8 @@ def profile_key(request, id):
                 "id": user.id
             }
 
-            user_id = user_data.get('id')
-
             # Verificar se usuário tem permissão para alterações
-            if user_id == credential_id:
+            if user.credential_id == credential_id:
                 user_admin = True
             else:
                 user_admin = False
@@ -576,3 +574,193 @@ def profile_key(request, id):
     
     else:
         return JsonResponse({'error': 'Perfil não existe.'}, status=405)
+    
+@csrf_exempt
+def update_key(request, id):
+    if request.method == 'PUT':
+        try:
+            data = json.loads(request.body.decode('utf-8'))
+            print(f'data: {data}')
+
+            credential_id = id
+            print(f'credential_id: {credential_id}')
+
+            user_data = data['user']
+            print(f'user_data: {user_data}')
+
+            # Obtenha o usuário existente
+            user = User.objects.get(credential_id=credential_id)
+            print(f'user: {user}')
+
+            # Atualize os campos do usuário
+            user.name = user_data['name']
+            user.title = user_data['title']
+            user.email = user_data['email']
+            user.phone = user_data['phone']
+            user.location = user_data['location']
+            user.avatar = user_data['avatar']
+            user.gender = user_data['gender']
+            user.pronoun = user_data['pronoun']
+            user.description = user_data['description']
+            user.access_level=user_data['access_level']
+            user.published=user_data['published']
+            user.save()
+
+            # Recuperar os IDs das entradas relacionadas
+            #link_query = Link.objects.filter(user=user)
+            #print(f'link_query: {link_query}')
+            #link_ids = list(link_query.values_list('id', flat=True))
+            #print(f'link_ids: {link_ids}')
+            link_query = Link.objects.filter(user=user)
+            link_ids = [link.id for link in link_query]
+            print(f'link_ids: {link_ids}')
+            
+            experience_query = Experience.objects.filter(user=user)
+            experience_ids = [exp.id for exp in experience_query]
+            print(f'experience_ids: {experience_ids}')
+
+            education_query = Education.objects.filter(user=user)
+            education_ids = [edu.id for edu in education_query]
+            print(f'education_ids: {education_ids}')
+
+            skill_query = Skill.objects.filter(user=user)
+            skill_ids = [skill.id for skill in skill_query]
+            print(f'skill_ids: {skill_ids}')
+
+            graphic_query = Graphic.objects.filter(user=user)
+            graphic_ids = [graphic.id for graphic in graphic_query]
+            print(f'graphic_ids: {graphic_ids}')
+
+            topic_query = Topic.objects.filter(user=user)
+            topic_ids = [topic.id for topic in topic_query]
+            print(f'topic_ids: {topic_ids}')
+            
+            # Atualize as experiências
+            for exp_data in data['experience']:
+                exp_id = experience_ids.pop(0) if experience_ids else None
+                if exp_id:
+                    print(f'exp_id: {exp_id}')
+                    experience = Experience.objects.get(pk=exp_id)
+                    experience.company = exp_data['company']
+                    experience.position = exp_data['position']
+                    experience.period = exp_data['period']
+                    experience.description = exp_data['description']
+                    experience.save()
+                else:
+                    Experience.objects.create(user=user, **exp_data)
+
+            # Atualize os links
+            for link_data in data['links']:
+                link_id = link_ids.pop(0) if link_ids else None
+                if link_id:
+                    print(f'link_id: {link_id}')
+                    link = Link.objects.get(pk=link_id)
+                    link.name = link_data['name']
+                    link.url = link_data['url']
+                    link.save()
+                else:
+                    Link.objects.create(user=user, **link_data)
+            
+            # Atualize as educações
+            for edu_data in data['education']:
+                edu_id = education_ids.pop(0) if education_ids else None
+                if edu_id:
+                    print(f'edu_id: {edu_id}')
+                    education = Education.objects.get(pk=edu_id)
+                    education.institution = edu_data['institution']
+                    education.course = edu_data['course']
+                    education.period = edu_data['period']
+                    education.description = edu_data['description']
+                    education.save()
+                else:
+                    Education.objects.create(user=user, **edu_data)
+
+            # Atualize as habilidades
+            for index, skill_data in enumerate(data['skills']):
+                skill_id = skill_ids[index] if index < len(skill_ids) else None
+                if skill_id:
+                    print(f'skill_id: {skill_id}')
+                    skill = Skill.objects.get(pk=skill_id)
+                    skill.name = skill_data
+                    skill.save()
+                else:
+                    Skill.objects.create(user=user, name=skill_data)
+
+            # Atualize os gráficos e tópicos personalizados
+            for custom_data in data['Custom']:
+                custom_id = None
+                if custom_data['topicType']['type'] == 'graphic':
+                    custom_id = graphic_ids.pop(0) if graphic_ids else None
+                    if custom_id:
+                        print(f'custom_id: {custom_id}')
+                        graphic = Graphic.objects.get(pk=custom_id)
+                        graphic.title = custom_data['title']
+                        graphic.description = custom_data['description']
+                        graphic.percentage = custom_data['topicType']['percentage']
+                        graphic.color = custom_data['topicType']['color']
+                        graphic.save()
+                    else:
+                        Graphic.objects.create(
+                            user=user,
+                            title=custom_data['title'],
+                            description=custom_data['description'],
+                            percentage=custom_data['topicType']['percentage'],
+                            color=custom_data['topicType']['color']
+                        )
+                elif custom_data['topicType']['type'] == 'topics':
+                    custom_id = topic_ids.pop(0) if topic_ids else None
+                    if custom_id:
+                        print(f'custom_id: {custom_id}')
+                        topic = Topic.objects.get(pk=custom_id)
+                        topic.title = custom_data['title']
+                        topic.description = custom_data['description']
+                        topic.topics = custom_data['topicType']['topics']
+                        topic.save()
+                    else:
+                        Topic.objects.create(
+                            user=user,
+                            title=custom_data['title'],
+                            description=custom_data['description'],
+                            topics=custom_data['topicType']['topics']
+                        )
+
+            # Retorne uma resposta de sucesso
+            return JsonResponse({'message': 'Atualizado com sucesso'})
+
+        except User.DoesNotExist:
+            return JsonResponse({'error': 'Usuário não encontrado'}, status=404)
+        except Exception as e:
+            # Em caso de qualquer exceção, retorne uma resposta de erro
+            return JsonResponse({'error': str(e)}, status=500)
+
+    # Se não for um request POST, retorne um erro de método não permitido
+    return JsonResponse({'error': 'Método não permitido'}, status=405)
+
+@csrf_exempt
+def delete_key(request, id):
+    if request.method == 'DELETE':
+        try:
+            credential_id = id
+
+            # Obtenha o usuário existente
+            user = User.objects.get(credential_id=credential_id)
+            
+            # Exclui todas as entradas relacionadas ao usuário em todas as tabelas
+            Link.objects.filter(user=user).delete()
+            Experience.objects.filter(user=user).delete()
+            Education.objects.filter(user=user).delete()
+            Skill.objects.filter(user=user).delete()
+            Graphic.objects.filter(user=user).delete()
+            Topic.objects.filter(user=user).delete()
+            
+            # Exclui o usuário em si
+            user.delete()
+            
+            return JsonResponse({'message': 'Usuário excluído com sucesso'})
+
+        except User.DoesNotExist:
+            return JsonResponse({'error': 'Usuário não encontrado'}, status=404)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+
+    return JsonResponse({'error': 'Método não permitido'}, status=405)

@@ -10,6 +10,8 @@ urlpatterns = [
     path('accessLevel/<int:id>', views.accessLevel, name='accessLevel'),
     path('published/<int:id>', views.published, name='published'),
     path('profile/<int:id>', views.profile, name='profile'),
-    re_path('profile_key/(?P<id>\d+)/$', views.profile_key, name='profile_by_key')
+    re_path('profile_key/(?P<id>\d+)/$', views.profile_key, name='profile_by_key'),
+    re_path('update_key/(?P<id>\d+)/$', views.update_key, name='update_by_key'),
+    re_path('delete_key/(?P<id>\d+)/$', views.delete_key, name='delete_by_key')
 ]
 
