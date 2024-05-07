@@ -118,7 +118,7 @@ def login(request):
             except Credential.DoesNotExist:
 
                 # Usuário não encontrado, retornar mensagem de erro
-                return JsonResponse({'error': 'Usuário não encontrado'}, status=404)
+                return JsonResponse({'error': 'Usuário não encontrado'}, status=400)
             
         else:
             
