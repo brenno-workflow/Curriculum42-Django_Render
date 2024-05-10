@@ -675,102 +675,110 @@ def update_key(request, id):
             print(f'user: {user}')
 
             # Atualize os campos do usuário
-            user.name = user_data['name']
-            user.title = user_data['title']
-            user.email = user_data['email']
-            user.phone = user_data['phone']
-            user.location = user_data['location']
-            user.avatar = user_data['avatar']
-            user.gender = user_data['gender']
-            user.pronoun = user_data['pronoun']
-            user.description = user_data['description']
-            user.access_level=user_data['access_level']
-            user.published=user_data['published']
-            user.save()
+            user_data = data.get('user', {})
 
-            # Atualize os links
-            for link_data in data.get('links', []):
-                if 'id' in link_data:
-                    # Se existe 'id' no link_data, atualize um existente
-                    Link.objects.filter(user=user, id=link_data['id']).update(
-                        name=link_data.get('name', ''),
-                        url=link_data.get('url', '')
-                    )
-                else:
-                    # Caso contrário, crie um novo
-                    Link.objects.create(user=user, **link_data)
-            
-            # Atualize as experiências
-            for exp_data in data.get('experience', []):
-                if 'id' in exp_data:
-                    Experience.objects.filter(user=user, id=exp_data['id']).update(
-                        company=exp_data.get('company', ''),
-                        position=exp_data.get('position', ''),
-                        period=exp_data.get('period', ''),
-                        description=exp_data.get('description', '')
-                    )
-                else:
-                    Experience.objects.create(user=user, **exp_data)
+            if user_data:
+                user.name = user_data.get('name', user.name)
+                user.title = user_data.get('title', user.title)
+                user.email = user_data.get('email', user.email)
+                user.phone = user_data.get('phone', user.phone)
+                user.location = user_data.get('location', user.location)
+                user.avatar = user_data.get('avatar', user.avatar)
+                user.gender = user_data.get('gender', user.gender)
+                user.pronoun = user_data.get('pronoun', user.pronoun)
+                user.description = user_data.get('description', user.description)
+                user.access_level = user_data.get('access_level', user.access_level)
+                user.published = user_data.get('published', user.published)
+                user.save()
 
-            # Atualize as educações
-            for edu_data in data.get('education', []):
-                if 'id' in edu_data:
-                    Education.objects.filter(user=user, id=edu_data['id']).update(
-                        institution=edu_data.get('institution', ''),
-                        course=edu_data.get('course', ''),
-                        period=edu_data.get('period', ''),
-                        description=edu_data.get('description', '')
-                    )
-                else:
-                    Education.objects.create(user=user, **edu_data)
-
-            # Atualize as habilidades
-            for skill_data in data.get('skills', []):
-                if 'id' in skill_data:
-                    Skill.objects.filter(user=user, id=skill_data['id']).update(
-                        name=skill_data.get('name', '')
-                    )
-                else:
-                    Skill.objects.create(user=user, name=skill_data)
-
-            # Atualize os gráficos e tópicos personalizados
-            for custom_data in data.get('Custom', []):
-                if custom_data['topicType']['type'] == 'graphic':
-                    if 'id' in custom_data:
-                        Graphic.objects.filter(user=user, id=custom_data['id']).update(
-                            title=custom_data.get('title', ''),
-                            description=custom_data.get('description', ''),
-                            percentage=custom_data['topicType'].get('percentage', 0),
-                            color=custom_data['topicType'].get('color', '')
+                # Atualize os links
+                for link_data in data.get('links', []):
+                    if 'id' in link_data:
+                        # Se existe 'id' no link_data, atualize um existente
+                        Link.objects.filter(user=user, id=link_data['id']).update(
+                            name=link_data.get('name', ''),
+                            url=link_data.get('url', '')
                         )
                     else:
-                        Graphic.objects.create(
-                            user=user,
-                            title=custom_data.get('title', ''),
-                            description=custom_data.get('description', ''),
-                            percentage=custom_data['topicType'].get('percentage', 0),
-                            color=custom_data['topicType'].get('color', '')
-                        )
-                elif custom_data['topicType']['type'] == 'topics':
-                    if 'id' in custom_data:
-                        Topic.objects.filter(user=user, id=custom_data['id']).update(
-                            title=custom_data.get('title', ''),
-                            description=custom_data.get('description', ''),
-                            topics=custom_data['topicType'].get('topics', [])
+                        # Caso contrário, crie um novo
+                        Link.objects.create(user=user, **link_data)
+                
+                # Atualize as experiências
+                for exp_data in data.get('experience', []):
+                    if 'id' in exp_data:
+                        Experience.objects.filter(user=user, id=exp_data['id']).update(
+                            company=exp_data.get('company', ''),
+                            position=exp_data.get('position', ''),
+                            period=exp_data.get('period', ''),
+                            description=exp_data.get('description', '')
                         )
                     else:
-                        Topic.objects.create(
-                            user=user,
-                            title=custom_data.get('title', ''),
-                            description=custom_data.get('description', ''),
-                            topics=custom_data['topicType'].get('topics', [])
-                        )
+                        Experience.objects.create(user=user, **exp_data)
 
-            # Retorne uma resposta de sucesso
-            return JsonResponse({'message': 'Atualizado com sucesso'})
+                # Atualize as educações
+                for edu_data in data.get('education', []):
+                    if 'id' in edu_data:
+                        Education.objects.filter(user=user, id=edu_data['id']).update(
+                            institution=edu_data.get('institution', ''),
+                            course=edu_data.get('course', ''),
+                            period=edu_data.get('period', ''),
+                            description=edu_data.get('description', '')
+                        )
+                    else:
+                        Education.objects.create(user=user, **edu_data)
+
+                # Atualize as habilidades
+                for skill_data in data.get('skills', []):
+                    if 'id' in skill_data:
+                        Skill.objects.filter(user=user, id=skill_data['id']).update(
+                            name=skill_data.get('name', '')
+                        )
+                    else:
+                        Skill.objects.create(user=user, name=skill_data)
+
+                # Atualize os gráficos e tópicos personalizados
+                for custom_data in data.get('Custom', []):
+                    if custom_data['topicType']['type'] == 'graphic':
+                        if 'id' in custom_data:
+                            Graphic.objects.filter(user=user, id=custom_data['id']).update(
+                                title=custom_data.get('title', ''),
+                                description=custom_data.get('description', ''),
+                                percentage=custom_data['topicType'].get('percentage', 0),
+                                color=custom_data['topicType'].get('color', '')
+                            )
+                        else:
+                            Graphic.objects.create(
+                                user=user,
+                                title=custom_data.get('title', ''),
+                                description=custom_data.get('description', ''),
+                                percentage=custom_data['topicType'].get('percentage', 0),
+                                color=custom_data['topicType'].get('color', '')
+                            )
+                    elif custom_data['topicType']['type'] == 'topics':
+                        if 'id' in custom_data:
+                            Topic.objects.filter(user=user, id=custom_data['id']).update(
+                                title=custom_data.get('title', ''),
+                                description=custom_data.get('description', ''),
+                                topics=custom_data['topicType'].get('topics', [])
+                            )
+                        else:
+                            Topic.objects.create(
+                                user=user,
+                                title=custom_data.get('title', ''),
+                                description=custom_data.get('description', ''),
+                                topics=custom_data['topicType'].get('topics', [])
+                            )
+
+                # Retorne uma resposta de sucesso
+                return JsonResponse({'message': 'Atualizado com sucesso'})
+        
+            else:
+                # Retorne uma resposta de falha
+                return JsonResponse({'error': 'Dados inválidos'}, status=400)
 
         except User.DoesNotExist:
             return JsonResponse({'error': 'Usuário não encontrado'}, status=404)
+        
         except Exception as e:
             # Em caso de qualquer exceção, retorne uma resposta de erro
             return JsonResponse({'error': str(e)}, status=500)
