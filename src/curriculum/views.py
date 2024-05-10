@@ -461,6 +461,89 @@ def profile(request, id):
     
     else:
         return JsonResponse({'error': 'Perfil não existe.'}, status=405)
+    
+@csrf_exempt
+def create_key(request, id):
+    if request.method == 'POST':
+        try:
+                        
+            data = json.loads(request.body.decode('utf-8'))
+            print(data)
+
+            credential_id = id
+            print(f'credential_id: {credential_id}')
+
+            # Verificar se já existe um usuário com o credential_id fornecido na URL
+            user_exists = User.objects.filter(credential_id=credential_id).exists()
+
+            if not user_exists:                
+
+                # Inserir dados do usuário
+                user_data = data['user']
+                user = User.objects.create(
+                    name=user_data['name'],
+                    title=user_data['title'],
+                    email=user_data['email'],
+                    phone=user_data['phone'],
+                    location=user_data['location'],
+                    avatar=user_data['avatar'],
+                    gender=user_data['gender'],
+                    pronoun=user_data['pronoun'],
+                    description=user_data['description'],
+                    credential_id=credential_id,
+                    key=get_random_string(length=20),
+                    access_level=user_data['access_level'],
+                    published=user_data['published']
+                )
+                
+                # Crie os links
+                for link_data in data.get('links', []):
+                    Link.objects.create(user=user, **link_data)
+
+                # Crie as experiências
+                for exp_data in data.get('experience', []):
+                    Experience.objects.create(user=user, **exp_data)
+
+                # Crie as educações
+                for edu_data in data.get('education', []):
+                    Education.objects.create(user=user, **edu_data)
+
+                # Crie as habilidades
+                for skill_name in data.get('skills', []):
+                    Skill.objects.create(user=user, name=skill_name)
+
+                # Crie os tópicos personalizados
+                for custom_data in data.get('Custom', []):
+                    topic_type = custom_data.get('topicType', {})
+                    if topic_type.get('type') == 'graphic':
+                        Graphic.objects.create(
+                            user=user,
+                            title=custom_data.get('title', ''),
+                            description=custom_data.get('description', ''),
+                            percentage=topic_type.get('percentage', 0),
+                            color=topic_type.get('color', '')
+                        )
+                    elif topic_type.get('type') == 'topics':
+                        Topic.objects.create(
+                            user=user,
+                            title=custom_data.get('title', ''),
+                            description=custom_data.get('description', ''),
+                            topics=topic_type.get('topics', [])
+                        )
+
+                # Retorne uma resposta de sucesso
+                return JsonResponse({'message': 'Criado com sucesso'})
+            
+            else:
+                # Se o usuário já existir, retorne uma mensagem informando que já existe um currículo
+                return JsonResponse({'message': 'Já existe um currículo para este usuário'}, status=400)
+
+        except Exception as e:
+            # Em caso de qualquer exceção, retorne uma resposta de erro
+            return JsonResponse({'error': str(e)}, status=500)
+
+    # Se não for um request POST, retorne um erro de método não permitido
+    return JsonResponse({'error': 'Método não permitido'}, status=405)
 
 @csrf_exempt
 def profile_key(request, id):
@@ -517,7 +600,8 @@ def profile_key(request, id):
                 "company": experience.company,
                 "position": experience.position,
                 "period": experience.period,
-                "description": experience.description
+                "description": experience.description,
+                "id": experience.id
             } for experience in experiences]
 
             educations = Education.objects.filter(user=user)
@@ -525,7 +609,8 @@ def profile_key(request, id):
                 "institution": education.institution,
                 "course": education.course,
                 "period": education.period,
-                "description": education.description
+                "description": education.description,
+                "id": education.id
             } for education in educations]
 
             skills = Skill.objects.filter(user=user)
@@ -537,6 +622,7 @@ def profile_key(request, id):
                 custom_data.append({
                     "title": graphic.title,
                     "description": graphic.description,
+                    "id": graphic.id,
                     "topicType": {
                         "type": graphic.type,
                         "description": graphic.description,
@@ -550,6 +636,7 @@ def profile_key(request, id):
                 custom_data.append({
                     "title": topic.title,
                     "description": topic.description,
+                    "id": topic.id,
                     "topicType": {
                         "type": topic.type,
                         "topics": topic.topics
