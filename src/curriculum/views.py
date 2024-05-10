@@ -663,10 +663,17 @@ def update_key(request, id):
     # Informar o metodo
     if request.method == 'PUT':
 
-        # Buscar a chave do curriculo
-        key = request.GET.get('key', None)
-
         try:
+
+            data = json.loads(request.body.decode('utf-8'))
+            print(f'data: {data}')
+
+            credential_id = id
+            print(f'credential_id: {credential_id}')
+
+            # Buscar a chave do curriculo
+            key = request.GET.get('key', None)
+
             if key:
 
                 # Obtenha o usuário existente
@@ -676,13 +683,7 @@ def update_key(request, id):
                 
                 # Obtenha o usuário existente
                 user = User.objects.get(credential_id=credential_id)
-            
-            data = json.loads(request.body.decode('utf-8'))
-            print(f'data: {data}')
-
-            credential_id = id
-            print(f'credential_id: {credential_id}')
-
+                
             user_data = data['user']
             print(f'user_data: {user_data}')
 
