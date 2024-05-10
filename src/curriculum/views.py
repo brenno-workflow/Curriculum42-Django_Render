@@ -471,72 +471,63 @@ def create_key(request, id):
             print(data)
 
             credential_id = id
-            print(f'credential_id: {credential_id}')
+            print(f'credential_id: {credential_id}')             
 
-            # Verificar se já existe um usuário com o credential_id fornecido na URL
-            user_exists = User.objects.filter(credential_id=credential_id).exists()
-
-            if not user_exists:                
-
-                # Inserir dados do usuário
-                user_data = data['user']
-                user = User.objects.create(
-                    name=user_data['name'],
-                    title=user_data['title'],
-                    email=user_data['email'],
-                    phone=user_data['phone'],
-                    location=user_data['location'],
-                    avatar=user_data['avatar'],
-                    gender=user_data['gender'],
-                    pronoun=user_data['pronoun'],
-                    description=user_data['description'],
-                    credential_id=credential_id,
-                    key=get_random_string(length=20),
-                    access_level=user_data['access_level'],
-                    published=user_data['published']
-                )
-                
-                # Crie os links
-                for link_data in data.get('links', []):
-                    Link.objects.create(user=user, **link_data)
-
-                # Crie as experiências
-                for exp_data in data.get('experience', []):
-                    Experience.objects.create(user=user, **exp_data)
-
-                # Crie as educações
-                for edu_data in data.get('education', []):
-                    Education.objects.create(user=user, **edu_data)
-
-                # Crie as habilidades
-                for skill_name in data.get('skills', []):
-                    Skill.objects.create(user=user, name=skill_name)
-
-                # Crie os tópicos personalizados
-                for custom_data in data.get('Custom', []):
-                    topic_type = custom_data.get('topicType', {})
-                    if topic_type.get('type') == 'graphic':
-                        Graphic.objects.create(
-                            user=user,
-                            title=custom_data.get('title', ''),
-                            description=custom_data.get('description', ''),
-                            percentage=topic_type.get('percentage', 0),
-                            color=topic_type.get('color', '')
-                        )
-                    elif topic_type.get('type') == 'topics':
-                        Topic.objects.create(
-                            user=user,
-                            title=custom_data.get('title', ''),
-                            description=custom_data.get('description', ''),
-                            topics=topic_type.get('topics', [])
-                        )
-
-                # Retorne uma resposta de sucesso
-                return JsonResponse({'message': 'Criado com sucesso'})
+            # Inserir dados do usuário
+            user_data = data['user']
+            user = User.objects.create(
+                name=user_data['name'],
+                title=user_data['title'],
+                email=user_data['email'],
+                phone=user_data['phone'],
+                location=user_data['location'],
+                avatar=user_data['avatar'],
+                gender=user_data['gender'],
+                pronoun=user_data['pronoun'],
+                description=user_data['description'],
+                credential_id=credential_id,
+                key=get_random_string(length=20),
+                access_level=user_data['access_level'],
+                published=user_data['published']
+            )
             
-            else:
-                # Se o usuário já existir, retorne uma mensagem informando que já existe um currículo
-                return JsonResponse({'message': 'Já existe um currículo para este usuário'}, status=400)
+            # Crie os links
+            for link_data in data.get('links', []):
+                Link.objects.create(user=user, **link_data)
+
+            # Crie as experiências
+            for exp_data in data.get('experience', []):
+                Experience.objects.create(user=user, **exp_data)
+
+            # Crie as educações
+            for edu_data in data.get('education', []):
+                Education.objects.create(user=user, **edu_data)
+
+            # Crie as habilidades
+            for skill_name in data.get('skills', []):
+                Skill.objects.create(user=user, name=skill_name)
+
+            # Crie os tópicos personalizados
+            for custom_data in data.get('Custom', []):
+                topic_type = custom_data.get('topicType', {})
+                if topic_type.get('type') == 'graphic':
+                    Graphic.objects.create(
+                        user=user,
+                        title=custom_data.get('title', ''),
+                        description=custom_data.get('description', ''),
+                        percentage=topic_type.get('percentage', 0),
+                        color=topic_type.get('color', '')
+                    )
+                elif topic_type.get('type') == 'topics':
+                    Topic.objects.create(
+                        user=user,
+                        title=custom_data.get('title', ''),
+                        description=custom_data.get('description', ''),
+                        topics=topic_type.get('topics', [])
+                    )
+
+            # Retorne uma resposta de sucesso
+            return JsonResponse({'message': 'Criado com sucesso'})
 
         except Exception as e:
             # Em caso de qualquer exceção, retorne uma resposta de erro
@@ -697,122 +688,82 @@ def update_key(request, id):
             user.published=user_data['published']
             user.save()
 
-            # Recuperar os IDs das entradas relacionadas
-            #link_query = Link.objects.filter(user=user)
-            #print(f'link_query: {link_query}')
-            #link_ids = list(link_query.values_list('id', flat=True))
-            #print(f'link_ids: {link_ids}')
-            link_query = Link.objects.filter(user=user)
-            link_ids = [link.id for link in link_query]
-            print(f'link_ids: {link_ids}')
-            
-            experience_query = Experience.objects.filter(user=user)
-            experience_ids = [exp.id for exp in experience_query]
-            print(f'experience_ids: {experience_ids}')
-
-            education_query = Education.objects.filter(user=user)
-            education_ids = [edu.id for edu in education_query]
-            print(f'education_ids: {education_ids}')
-
-            skill_query = Skill.objects.filter(user=user)
-            skill_ids = [skill.id for skill in skill_query]
-            print(f'skill_ids: {skill_ids}')
-
-            graphic_query = Graphic.objects.filter(user=user)
-            graphic_ids = [graphic.id for graphic in graphic_query]
-            print(f'graphic_ids: {graphic_ids}')
-
-            topic_query = Topic.objects.filter(user=user)
-            topic_ids = [topic.id for topic in topic_query]
-            print(f'topic_ids: {topic_ids}')
+            # Atualize os links
+            for link_data in data.get('links', []):
+                if 'id' in link_data:
+                    # Se existe 'id' no link_data, atualize um existente
+                    Link.objects.filter(user=user, id=link_data['id']).update(
+                        name=link_data.get('name', ''),
+                        url=link_data.get('url', '')
+                    )
+                else:
+                    # Caso contrário, crie um novo
+                    Link.objects.create(user=user, **link_data)
             
             # Atualize as experiências
-            for exp_data in data['experience']:
-                exp_id = experience_ids.pop(0) if experience_ids else None
-                if exp_id:
-                    print(f'exp_id: {exp_id}')
-                    experience = Experience.objects.get(pk=exp_id)
-                    experience.company = exp_data['company']
-                    experience.position = exp_data['position']
-                    experience.period = exp_data['period']
-                    experience.description = exp_data['description']
-                    experience.save()
+            for exp_data in data.get('experience', []):
+                if 'id' in exp_data:
+                    Experience.objects.filter(user=user, id=exp_data['id']).update(
+                        company=exp_data.get('company', ''),
+                        position=exp_data.get('position', ''),
+                        period=exp_data.get('period', ''),
+                        description=exp_data.get('description', '')
+                    )
                 else:
                     Experience.objects.create(user=user, **exp_data)
 
-            # Atualize os links
-            for link_data in data['links']:
-                link_id = link_ids.pop(0) if link_ids else None
-                if link_id:
-                    print(f'link_id: {link_id}')
-                    link = Link.objects.get(pk=link_id)
-                    link.name = link_data['name']
-                    link.url = link_data['url']
-                    link.save()
-                else:
-                    Link.objects.create(user=user, **link_data)
-            
             # Atualize as educações
-            for edu_data in data['education']:
-                edu_id = education_ids.pop(0) if education_ids else None
-                if edu_id:
-                    print(f'edu_id: {edu_id}')
-                    education = Education.objects.get(pk=edu_id)
-                    education.institution = edu_data['institution']
-                    education.course = edu_data['course']
-                    education.period = edu_data['period']
-                    education.description = edu_data['description']
-                    education.save()
+            for edu_data in data.get('education', []):
+                if 'id' in edu_data:
+                    Education.objects.filter(user=user, id=edu_data['id']).update(
+                        institution=edu_data.get('institution', ''),
+                        course=edu_data.get('course', ''),
+                        period=edu_data.get('period', ''),
+                        description=edu_data.get('description', '')
+                    )
                 else:
                     Education.objects.create(user=user, **edu_data)
 
             # Atualize as habilidades
-            for index, skill_data in enumerate(data['skills']):
-                skill_id = skill_ids[index] if index < len(skill_ids) else None
-                if skill_id:
-                    print(f'skill_id: {skill_id}')
-                    skill = Skill.objects.get(pk=skill_id)
-                    skill.name = skill_data
-                    skill.save()
+            for skill_data in data.get('skills', []):
+                if 'id' in skill_data:
+                    Skill.objects.filter(user=user, id=skill_data['id']).update(
+                        name=skill_data.get('name', '')
+                    )
                 else:
                     Skill.objects.create(user=user, name=skill_data)
 
             # Atualize os gráficos e tópicos personalizados
-            for custom_data in data['Custom']:
-                custom_id = None
+            for custom_data in data.get('Custom', []):
                 if custom_data['topicType']['type'] == 'graphic':
-                    custom_id = graphic_ids.pop(0) if graphic_ids else None
-                    if custom_id:
-                        print(f'custom_id: {custom_id}')
-                        graphic = Graphic.objects.get(pk=custom_id)
-                        graphic.title = custom_data['title']
-                        graphic.description = custom_data['description']
-                        graphic.percentage = custom_data['topicType']['percentage']
-                        graphic.color = custom_data['topicType']['color']
-                        graphic.save()
+                    if 'id' in custom_data:
+                        Graphic.objects.filter(user=user, id=custom_data['id']).update(
+                            title=custom_data.get('title', ''),
+                            description=custom_data.get('description', ''),
+                            percentage=custom_data['topicType'].get('percentage', 0),
+                            color=custom_data['topicType'].get('color', '')
+                        )
                     else:
                         Graphic.objects.create(
                             user=user,
-                            title=custom_data['title'],
-                            description=custom_data['description'],
-                            percentage=custom_data['topicType']['percentage'],
-                            color=custom_data['topicType']['color']
+                            title=custom_data.get('title', ''),
+                            description=custom_data.get('description', ''),
+                            percentage=custom_data['topicType'].get('percentage', 0),
+                            color=custom_data['topicType'].get('color', '')
                         )
                 elif custom_data['topicType']['type'] == 'topics':
-                    custom_id = topic_ids.pop(0) if topic_ids else None
-                    if custom_id:
-                        print(f'custom_id: {custom_id}')
-                        topic = Topic.objects.get(pk=custom_id)
-                        topic.title = custom_data['title']
-                        topic.description = custom_data['description']
-                        topic.topics = custom_data['topicType']['topics']
-                        topic.save()
+                    if 'id' in custom_data:
+                        Topic.objects.filter(user=user, id=custom_data['id']).update(
+                            title=custom_data.get('title', ''),
+                            description=custom_data.get('description', ''),
+                            topics=custom_data['topicType'].get('topics', [])
+                        )
                     else:
                         Topic.objects.create(
                             user=user,
-                            title=custom_data['title'],
-                            description=custom_data['description'],
-                            topics=custom_data['topicType']['topics']
+                            title=custom_data.get('title', ''),
+                            description=custom_data.get('description', ''),
+                            topics=custom_data['topicType'].get('topics', [])
                         )
 
             # Retorne uma resposta de sucesso
