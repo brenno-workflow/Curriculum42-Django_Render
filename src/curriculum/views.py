@@ -659,8 +659,24 @@ def profile_key(request, id):
     
 @csrf_exempt
 def update_key(request, id):
+
+    # Informar o metodo
     if request.method == 'PUT':
+
+        # Buscar a chave do curriculo
+        key = request.GET.get('key', None)
+
         try:
+            if key:
+
+                # Obtenha o usuário existente
+                user = User.objects.get(key=key)
+
+            else:
+                
+                # Obtenha o usuário existente
+                user = User.objects.get(credential_id=credential_id)
+            
             data = json.loads(request.body.decode('utf-8'))
             print(f'data: {data}')
 
@@ -669,10 +685,6 @@ def update_key(request, id):
 
             user_data = data['user']
             print(f'user_data: {user_data}')
-
-            # Obtenha o usuário existente
-            user = User.objects.get(credential_id=credential_id)
-            print(f'user: {user}')
 
             # Atualize os campos do usuário
             user_data = data.get('user', {})
