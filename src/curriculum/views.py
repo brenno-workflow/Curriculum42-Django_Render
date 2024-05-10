@@ -544,9 +544,6 @@ def profile_key(request, id):
 
         try:
 
-            data = json.loads(request.body.decode('utf-8'))
-            print(f'data: {data}')
-
             credential_id = id
             print(f'credential_id: {credential_id}')
 
@@ -558,13 +555,7 @@ def profile_key(request, id):
                 # Obtenha o usuário existente
                 user = User.objects.get(key=key)
 
-                user_data = data['user']
-                print(f'user_data: {user_data}')
-
-                # Atualize os campos do usuário
-                user_data = data.get('user', {})
-
-                if user_data:
+                if user:
             
                     user_data = {
                         "name": user.name,
