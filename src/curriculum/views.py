@@ -586,8 +586,12 @@ def profile_key(request, id):
                 "id": user.id
             }
 
+            # Atualize os campos do usuário
+            user_id = user.id
+            print(f'user_id: {user_id}')
+
             # Verificar se usuário tem permissão para alterações
-            if user.credential_id == credential_id:
+            if user_id == credential_id:
                 user_admin = True
             else:
                 user_admin = False
