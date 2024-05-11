@@ -721,28 +721,19 @@ def update_key(request, id):
 
                     # Atualizar os links
                     for link_data in data.get('links', []):
-
                         try:
                             link_id = link_data.get('id', 0)
+                            if link_id > 0:
+                                Link.objects.filter(user=user, id=link_id).update(
+                                    name=link_data.get('name', ''),
+                                    url=link_data.get('url', '')
+                                )
                         except:
-                            link_id = 0
-
-                        if link_id > 0:
-                            Link.objects.filter(user=user, id=link_id).update(
-                                name=link_data.get('name', ''),
-                                url=link_data.get('url', '')
-                            )
-                        else:
                             Link.objects.create(user=user, name=link_data.get('name', ''), url=link_data.get('url', ''))
                     
                     # Atualizar as experiências
                     for exp_data in data.get('experience', []):
-
-                        try:
-                            exp_id = exp_data.get('id', 0)
-                        except:
-                            exp_id = 0
-
+                        exp_id = exp_data.get('id', 0)
                         if exp_id > 0:
                             Experience.objects.filter(user=user, id=exp_id).update(
                                 company=exp_data.get('company', ''),
@@ -755,12 +746,7 @@ def update_key(request, id):
 
                     # Atualizar as educações
                     for edu_data in data.get('education', []):
-
-                        try:
-                            edu_id = edu_data.get('id', 0)
-                        except:
-                            edu_id = 0
-
+                        edu_id = edu_data.get('id', 0)
                         if edu_id > 0:
                             Education.objects.filter(user=user, id=edu_id).update(
                                 institution=edu_data.get('institution', ''),
@@ -773,12 +759,7 @@ def update_key(request, id):
 
                     # Atualizar as habilidades
                     for skill_data in data.get('skills', []):
-
-                        try:
-                            skill_id = skill_data.get('id', 0)
-                        except:
-                            skill_id = 0
-
+                        skill_id = skill_data.get('id', 0)
                         if skill_id > 0:
                             Skill.objects.filter(user=user, id=skill_id).update(
                                 name=skill_data.get('name', '')
@@ -788,15 +769,8 @@ def update_key(request, id):
 
                     # Atualizar os gráficos e tópicos personalizados
                     for custom_data in data.get('Custom', []):
-
-                        # Atualizar tabela Graphic
                         if custom_data['topicType']['type'] == 'graphic':
-
-                            try:
-                                custom_id = custom_data.get('id', 0)
-                            except:
-                                custom_id = 0
-
+                            custom_id = custom_data.get('id', 0)
                             if custom_id > 0:
                                 Graphic.objects.filter(user=user, id=custom_id).update(
                                     title=custom_data.get('title', ''),
@@ -812,15 +786,8 @@ def update_key(request, id):
                                     percentage=custom_data['topicType'].get('percentage', 0),
                                     color=custom_data['topicType'].get('color', '')
                                 )
-
-                        # Atualizar tabela Topic
                         elif custom_data['topicType']['type'] == 'topics':
-
-                            try:
-                                custom_id = custom_data.get('id', 0)
-                            except:
-                                custom_id = 0
-
+                            custom_id = custom_data.get('id', 0)
                             if custom_id > 0:
                                 Topic.objects.filter(user=user, id=custom_id).update(
                                     title=custom_data.get('title', ''),
