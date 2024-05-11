@@ -613,7 +613,7 @@ def profile_key(request, id):
                     skills = Skill.objects.filter(user=user)
                     skills_data = [{
                         "id": skill.id, 
-                        "skill": skill.name
+                        "name": skill.name
                     } for skill in skills]
 
                     custom_data = []
