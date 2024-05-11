@@ -558,7 +558,6 @@ def profile_key(request, id):
                 if user:
             
                     user_data = {
-                        "id": user.id,
                         "name": user.name,
                         "title": user.title,
                         "email": user.email,
@@ -572,7 +571,8 @@ def profile_key(request, id):
                         "published": user.published,
                         "created_at": user.created_at,
                         "updated_at": user.updated_at,
-                        "key": user.key
+                        "key": user.key,
+                        "id": user.id
                     }
 
                     # Atualize os campos do usuário
@@ -586,43 +586,36 @@ def profile_key(request, id):
                         user_admin = False
 
                     links = Link.objects.filter(user=user)
-                    links_data = [{
-                        "id": user_id,
-                        "name": link.name, 
-                        "url": link.url
-                    } for link in links]
+                    links_data = [{"name": link.name, "url": link.url} for link in links]
 
                     experiences = Experience.objects.filter(user=user)
                     experiences_data = [{
-                        "id": experience.id,
                         "company": experience.company,
                         "position": experience.position,
                         "period": experience.period,
-                        "description": experience.description
+                        "description": experience.description,
+                        "id": experience.id
                     } for experience in experiences]
 
                     educations = Education.objects.filter(user=user)
                     educations_data = [{
-                        "id": education.id,
                         "institution": education.institution,
                         "course": education.course,
                         "period": education.period,
-                        "description": education.description
+                        "description": education.description,
+                        "id": education.id
                     } for education in educations]
 
                     skills = Skill.objects.filter(user=user)
-                    skills_data = [{
-                        "id": skill.id, 
-                        "skill": skill.name
-                    } for skill in skills]
+                    skills_data = [skill.name for skill in skills]
 
                     custom_data = []
                     graphics = Graphic.objects.filter(user=user)
                     for graphic in graphics:
                         custom_data.append({
-                            "id": graphic.id,
                             "title": graphic.title,
                             "description": graphic.description,
+                            "id": graphic.id,
                             "topicType": {
                                 "type": graphic.type,
                                 "description": graphic.description,
@@ -634,9 +627,9 @@ def profile_key(request, id):
                     topics = Topic.objects.filter(user=user)
                     for topic in topics:
                         custom_data.append({
-                            "id": topic.id,
                             "title": topic.title,
                             "description": topic.description,
+                            "id": topic.id,
                             "topicType": {
                                 "type": topic.type,
                                 "topics": topic.topics
