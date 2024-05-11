@@ -733,8 +733,17 @@ def update_key(request, id):
 
                         # Buscar as informações do links
                         for link_data in data.get('links', []):
-                            link_id = link_data.get('id', 0)
-                            link_status = link_data.get('status', True)
+
+                            # Tentar pegar o id
+                            try:
+                                link_id = link_data.get('id', 0)
+                                # Tentar pegar o status
+                                try:
+                                    link_status = link_data.get('status', True)
+                                except:
+                                    link_status = True
+                            except:
+                                link_id = 0
 
                             # Atualizar os links
                             if link_id > 0:
@@ -750,8 +759,17 @@ def update_key(request, id):
                         
                         # Buscar as informações de experience
                         for exp_data in data.get('experience', []):
-                            exp_id = exp_data.get('id', 0)
-                            exp_status = exp_data.get('status', True)
+
+                            # Tentar pegar o id
+                            try:
+                                exp_id = exp_data.get('id', 0)
+                                # Tentar pegar o status
+                                try:
+                                    exp_status = exp_data.get('status', True)
+                                except:
+                                    exp_status = True
+                            except:
+                                exp_id = 0
 
                             # Atualizar as experience
                             if exp_id > 0:
@@ -769,8 +787,17 @@ def update_key(request, id):
 
                         # Buscar as informações de Educational
                         for edu_data in data.get('education', []):
-                            edu_id = edu_data.get('id', 0)
-                            edu_status = edu_data.get('status', True)
+
+                            # Tentar pegar o id
+                            try:
+                                edu_id = edu_data.get('id', 0)
+                                # Tentar pegar o status
+                                try:
+                                    edu_status = edu_data.get('status', True)
+                                except:
+                                    edu_status = True
+                            except:
+                                edu_id = 0
 
                             # Atualizar as educational
                             if edu_id > 0:
@@ -788,8 +815,17 @@ def update_key(request, id):
 
                         # Busca as informação de Skill
                         for skill_data in data.get('skills', []):
-                            skill_id = skill_data.get('id', 0)
-                            skill_status = skill_data.get('status', True)
+
+                            # Tentar pegar o id
+                            try:
+                                skill_id = skill_data.get('id', 0)
+                                # Tentar pegar o status
+                                try:
+                                    skill_status = skill_data.get('status', True)
+                                except:
+                                    skill_status = True
+                            except:
+                                skill_id = 0
 
                             # Atualizar as skills
                             if skill_id > 0:
@@ -807,8 +843,17 @@ def update_key(request, id):
 
                             # Buscar informações da tabela Graphic
                             if custom_data['topicType']['type'] == 'graphic':
-                                custom_id = custom_data.get('id', 0)
-                                custom_status = custom_data.get('status', True)
+
+                                # Tentar buscar o id
+                                try:
+                                    custom_id = custom_data.get('id', 0)
+                                    # Tentar pegar o status
+                                    try:
+                                        custom_status = custom_data.get('status', True)
+                                    except:
+                                        custom_status = True
+                                except:
+                                    custom_id = 0
 
                                 # Atualizar tabela Graphic
                                 if custom_id > 0:
@@ -832,8 +877,17 @@ def update_key(request, id):
 
                             # Buscar informações da table Topic
                             elif custom_data['topicType']['type'] == 'topics':
-                                custom_id = custom_data.get('id', 0)
-                                custom_status = custom_data.get('status', True)
+
+                                # Tentar buscar o id
+                                try:
+                                    custom_id = custom_data.get('id', 0)
+                                    # Tentar pegar o status
+                                    try:
+                                        custom_status = custom_data.get('status', True)
+                                    except:
+                                        custom_status = True
+                                except:
+                                    custom_id = 0
 
                                 # Atualizar tabela Topic
                                 if custom_id > 0:
