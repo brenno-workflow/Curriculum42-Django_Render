@@ -937,19 +937,35 @@ def delete_key(request, id):
                 user = User.objects.get(key=key)
 
                 if user:
+
+                    # Atualize os campos do usuário
+                    user_id = str(user.credential_id)
+                    print(f'user_id: {user_id}')
+
+                    # Verificar se usuário tem permissão para alterações
+                    if user_id == credential_id:
+                        user_admin = True
+                    else:
+                        user_admin = False
+
+                    if user_admin:
             
-                    # Exclui todas as entradas relacionadas ao usuário em todas as tabelas
-                    Link.objects.filter(user=user).delete()
-                    Experience.objects.filter(user=user).delete()
-                    Education.objects.filter(user=user).delete()
-                    Skill.objects.filter(user=user).delete()
-                    Graphic.objects.filter(user=user).delete()
-                    Topic.objects.filter(user=user).delete()
+                        # Exclui todas as entradas relacionadas ao usuário em todas as tabelas
+                        Link.objects.filter(user=user).delete()
+                        Experience.objects.filter(user=user).delete()
+                        Education.objects.filter(user=user).delete()
+                        Skill.objects.filter(user=user).delete()
+                        Graphic.objects.filter(user=user).delete()
+                        Topic.objects.filter(user=user).delete()
+                        
+                        # Exclui o usuário em si
+                        user.delete()
+            
+                        return JsonResponse({'message': 'Usuário excluído com sucesso'})
                     
-                    # Exclui o usuário em si
-                    user.delete()
-            
-                    return JsonResponse({'message': 'Usuário excluído com sucesso'})
+                    else:
+                        # Retorne uma resposta de falha
+                        return JsonResponse({'error': 'Você não tem permissão para excluir este usuário'}, status=403)
                 
                 else:
                     # Retorne uma resposta de falha
