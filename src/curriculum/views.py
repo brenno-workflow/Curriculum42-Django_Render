@@ -719,91 +719,141 @@ def update_key(request, id):
                     user.published = user_data.get('published', user.published)
                     user.save()
 
-                    # Atualizar os links
+                    # Buscar as informações do links
                     for link_data in data.get('links', []):
 
+                        # Tentar pegar o id
                         try:
                             link_id = link_data.get('id', 0)
+                            # Tentar pegar o status
+                            try:
+                                link_status = link_data.get('status', False)
+                            except:
+                                link_status = True
                         except:
                             link_id = 0
 
+                        # Atualizar os links
                         if link_id > 0:
-                            Link.objects.filter(user=user, id=link_id).update(
-                                name=link_data.get('name', ''),
-                                url=link_data.get('url', '')
-                            )
+                            if link_status == True:
+                                Link.objects.filter(user=user, id=link_id).update(
+                                    name=link_data.get('name', ''),
+                                    url=link_data.get('url', '')
+                                )
+                            else:
+                                Link.objects.filter(user=user, id=link_id).delete()
                         else:
                             Link.objects.create(user=user, name=link_data.get('name', ''), url=link_data.get('url', ''))
                     
-                    # Atualizar as experiências
+                    # Buscar as informações de experience
                     for exp_data in data.get('experience', []):
 
+                        # Tentar pegar o id
                         try:
                             exp_id = exp_data.get('id', 0)
+                            # Tentar pegar o status
+                            try:
+                                exp_status = exp_data.get('status', False)
+                            except:
+                                exp_status = True
                         except:
                             exp_id = 0
 
+                        # Atualizar as experience
                         if exp_id > 0:
-                            Experience.objects.filter(user=user, id=exp_id).update(
-                                company=exp_data.get('company', ''),
-                                position=exp_data.get('position', ''),
-                                period=exp_data.get('period', ''),
-                                description=exp_data.get('description', '')
-                            )
+                            if exp_status == True:
+                                Experience.objects.filter(user=user, id=exp_id).update(
+                                    company=exp_data.get('company', ''),
+                                    position=exp_data.get('position', ''),
+                                    period=exp_data.get('period', ''),
+                                    description=exp_data.get('description', '')
+                                )
+                            else:
+                                Experience.objects.filter(user=user, id=exp_id).delete()
                         else:
                             Experience.objects.create(user=user, **exp_data)
 
-                    # Atualizar as educações
+                    # Buscar as informações de Educational
                     for edu_data in data.get('education', []):
 
+                        # Tentar pegar o id
                         try:
                             edu_id = edu_data.get('id', 0)
+                            # Tentar pegar o status
+                            try:
+                                edu_status = edu_data.get('status', False)
+                            except:
+                                edu_status = True
                         except:
                             edu_id = 0
 
+                        # Atualizar as educational
                         if edu_id > 0:
-                            Education.objects.filter(user=user, id=edu_id).update(
-                                institution=edu_data.get('institution', ''),
-                                course=edu_data.get('course', ''),
-                                period=edu_data.get('period', ''),
-                                description=edu_data.get('description', '')
-                            )
+                            if edu_status == True:
+                                Education.objects.filter(user=user, id=edu_id).update(
+                                    institution=edu_data.get('institution', ''),
+                                    course=edu_data.get('course', ''),
+                                    period=edu_data.get('period', ''),
+                                    description=edu_data.get('description', '')
+                                )
+                            else:
+                                Education.objects.filter(user=user, id=edu_id).delete()
                         else:
                             Education.objects.create(user=user, **edu_data)
 
-                    # Atualizar as habilidades
+                    # Busca as informação de Skill
                     for skill_data in data.get('skills', []):
 
+                        # Tentar pegar o id
                         try:
                             skill_id = skill_data.get('id', 0)
+                            # Tentar pegar o status
+                            try:
+                                skill_status = skill_data.get('status', False)
+                            except:
+                                skill_status = True
                         except:
                             skill_id = 0
 
+                        # Atualizar as skills
                         if skill_id > 0:
-                            Skill.objects.filter(user=user, id=skill_id).update(
-                                name=skill_data.get('name', '')
-                            )
+                            if skill_status == True:
+                                Skill.objects.filter(user=user, id=skill_id).update(
+                                    name=skill_data.get('name', '')
+                                )
+                            else:
+                                Skill.objects.filter(user=user, id=skill_id).delete()
                         else:
                             Skill.objects.create(user=user, name=skill_data.get('name', ''))
 
                     # Atualizar os gráficos e tópicos personalizados
                     for custom_data in data.get('Custom', []):
 
-                        # Atualizar tabela Graphic
+                        # Buscar informações da tabela Graphic
                         if custom_data['topicType']['type'] == 'graphic':
 
+                            # Tentar buscar o id
                             try:
                                 custom_id = custom_data.get('id', 0)
+                                # Tentar pegar o status
+                                try:
+                                    custom_status = custom_data.get('status', False)
+                                except:
+                                    custom_status = True
                             except:
                                 custom_id = 0
 
+                            # Atualizar tabela Graphic
                             if custom_id > 0:
-                                Graphic.objects.filter(user=user, id=custom_id).update(
-                                    title=custom_data.get('title', ''),
-                                    description=custom_data.get('description', ''),
-                                    percentage=custom_data['topicType'].get('percentage', 0),
-                                    color=custom_data['topicType'].get('color', '')
-                                )
+                                if custom_status == True:
+                                    Graphic.objects.filter(user=user, id=custom_id).update(
+                                        title=custom_data.get('title', ''),
+                                        description=custom_data.get('description', ''),
+                                        percentage=custom_data['topicType'].get('percentage', 0),
+                                        color=custom_data['topicType'].get('color', '')
+                                    )
+                                else:
+                                    Graphic.objects.filter(user=user, id=custom_id).delete()
                             else:
                                 Graphic.objects.create(
                                     user=user,
@@ -813,20 +863,30 @@ def update_key(request, id):
                                     color=custom_data['topicType'].get('color', '')
                                 )
 
-                        # Atualizar tabela Topic
+                        # Buscar informações da table Topic
                         elif custom_data['topicType']['type'] == 'topics':
 
+                            # Tentar buscar o id
                             try:
                                 custom_id = custom_data.get('id', 0)
+                                # Tentar pegar o status
+                                try:
+                                    custom_status = custom_data.get('status', False)
+                                except:
+                                    custom_status = True
                             except:
                                 custom_id = 0
 
+                            # Atualizar tabela Topic
                             if custom_id > 0:
-                                Topic.objects.filter(user=user, id=custom_id).update(
-                                    title=custom_data.get('title', ''),
-                                    description=custom_data.get('description', ''),
-                                    topics=custom_data['topicType'].get('topics', [])
-                                )
+                                if custom_status == True:
+                                    Topic.objects.filter(user=user, id=custom_id).update(
+                                        title=custom_data.get('title', ''),
+                                        description=custom_data.get('description', ''),
+                                        topics=custom_data['topicType'].get('topics', [])
+                                    )
+                                else:
+                                    Topic.objects.filter(user=user, id=custom_id).delete()
                             else:
                                 Topic.objects.create(
                                     user=user,
