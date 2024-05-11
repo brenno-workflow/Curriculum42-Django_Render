@@ -587,7 +587,7 @@ def profile_key(request, id):
 
                     links = Link.objects.filter(user=user)
                     links_data = [{
-                        "id": user_id,
+                        "id": link.id,
                         "name": link.name, 
                         "url": link.url
                     } for link in links]
