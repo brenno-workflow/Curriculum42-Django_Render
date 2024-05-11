@@ -576,11 +576,11 @@ def profile_key(request, id):
                     }
 
                     # Atualize os campos do usuário
-                    user_id = user.credential_id
+                    user_id = str(user.credential_id)
                     print(f'user_id: {user_id}')
 
                     # Verificar se usuário tem permissão para alterações
-                    if str(user_id) == credential_id:
+                    if user_id == credential_id:
                         user_admin = True
                     else:
                         user_admin = False
@@ -832,22 +832,38 @@ def delete_key(request, id):
         try:
 
             credential_id = id
+            print(f'credential_id: {credential_id}')
 
-            # Obtenha o usuário existente
-            user = User.objects.get(credential_id=credential_id)
+            # Buscar a chave do curriculo
+            key = request.GET.get('key', None)
+
+            if key:
+
+                # Obtenha o usuário existente
+                user = User.objects.get(key=key)
+
+                if user:
             
-            # Exclui todas as entradas relacionadas ao usuário em todas as tabelas
-            Link.objects.filter(user=user).delete()
-            Experience.objects.filter(user=user).delete()
-            Education.objects.filter(user=user).delete()
-            Skill.objects.filter(user=user).delete()
-            Graphic.objects.filter(user=user).delete()
-            Topic.objects.filter(user=user).delete()
+                    # Exclui todas as entradas relacionadas ao usuário em todas as tabelas
+                    Link.objects.filter(user=user).delete()
+                    Experience.objects.filter(user=user).delete()
+                    Education.objects.filter(user=user).delete()
+                    Skill.objects.filter(user=user).delete()
+                    Graphic.objects.filter(user=user).delete()
+                    Topic.objects.filter(user=user).delete()
+                    
+                    # Exclui o usuário em si
+                    user.delete()
             
-            # Exclui o usuário em si
-            user.delete()
-            
-            return JsonResponse({'message': 'Usuário excluído com sucesso'})
+                    return JsonResponse({'message': 'Usuário excluído com sucesso'})
+                
+                else:
+                    # Retorne uma resposta de falha
+                    return JsonResponse({'error': 'Dados inválidos'}, status=400)
+                
+            else:
+                # Retorne uma resposta de falha
+                return JsonResponse({'error': '"Key" informada não existe'}, status=404)
 
         except User.DoesNotExist:
             # Retorna falha
