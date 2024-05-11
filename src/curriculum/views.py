@@ -739,7 +739,7 @@ def update_key(request, id):
                                 link_id = link_data.get('id', 0)
                                 # Tentar pegar o status
                                 try:
-                                    link_status = link_data.get('status')
+                                    link_status = link_data.get('status', True)
                                 except:
                                     link_status = True
                             except:
@@ -765,7 +765,7 @@ def update_key(request, id):
                                 exp_id = exp_data.get('id', 0)
                                 # Tentar pegar o status
                                 try:
-                                    exp_status = exp_data.get('status')
+                                    exp_status = exp_data.get('status', True)
                                 except:
                                     exp_status = True
                             except:
@@ -793,7 +793,7 @@ def update_key(request, id):
                                 edu_id = edu_data.get('id', 0)
                                 # Tentar pegar o status
                                 try:
-                                    edu_status = edu_data.get('status')
+                                    edu_status = edu_data.get('status', True)
                                 except:
                                     edu_status = True
                             except:
@@ -821,7 +821,7 @@ def update_key(request, id):
                                 skill_id = skill_data.get('id', 0)
                                 # Tentar pegar o status
                                 try:
-                                    skill_status = skill_data.get('status')
+                                    skill_status = skill_data.get('status', True)
                                 except:
                                     skill_status = True
                             except:
@@ -849,7 +849,7 @@ def update_key(request, id):
                                     custom_id = custom_data.get('id', 0)
                                     # Tentar pegar o status
                                     try:
-                                        custom_status = custom_data.get('status')
+                                        custom_status = custom_data.get('status', True)
                                     except:
                                         custom_status = True
                                 except:
@@ -883,7 +883,7 @@ def update_key(request, id):
                                     custom_id = custom_data.get('id', 0)
                                     # Tentar pegar o status
                                     try:
-                                        custom_status = custom_data.get('status')
+                                        custom_status = custom_data.get('status', True)
                                     except:
                                         custom_status = True
                                 except:
