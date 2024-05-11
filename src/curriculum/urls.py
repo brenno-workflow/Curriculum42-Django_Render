@@ -11,7 +11,7 @@ urlpatterns = [
     path('published/<int:id>', views.published, name='published'),
     path('profile/<int:id>', views.profile, name='profile'),
     path('create_key/<int:id>', views.create_key, name='create_key'),
-    re_path('profile_key/(?P<id>\d+)$', views.profile_key, name='profile_key'),
+    re_path('profile_key/(?P<id>\d+)/$', views.profile_key, name='profile_key'),
     re_path('update_key/(?P<id>\d+)$', views.update_key, name='update_key'),
     re_path('delete_key/(?P<id>\d+)$', views.delete_key, name='delete_key')
 ]
