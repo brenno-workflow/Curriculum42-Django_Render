@@ -650,7 +650,9 @@ def profile_key(request, id):
                         "education": educations_data,
                         "skills": skills_data,
                         "Custom": custom_data,
-                        "user_admin": user_admin
+                        "user_admin": user_admin,
+                        "user_credential_id": user_id,
+                        "credential_id": credential_id
                     }
 
                     return JsonResponse(response_data)
