@@ -988,7 +988,7 @@ def list_key(request, id):
                     my_cvs.append(cv_data)
                 else:
                     # Verifica se está publicado
-                    if user.published:
+                    if user.published == True:
                         cvs.append(cv_data)
 
             # Cria o objeto de resposta com os currículos formatados
