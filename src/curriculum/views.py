@@ -464,7 +464,10 @@ def profile(request, id):
     
 @csrf_exempt
 def create_key(request, id):
+
+    # Informa o metodo
     if request.method == 'POST':
+
         try:
                         
             data = json.loads(request.body.decode('utf-8'))
@@ -526,8 +529,15 @@ def create_key(request, id):
                         topics=topic_type.get('topics', [])
                     )
 
+            # Retornar informações do usuário recém-criado
+            response_data = {
+                'message': 'Criado com sucesso',
+                'user_id': user.id,
+                'user_key': user.key
+            }
+
             # Retorne uma resposta de sucesso
-            return JsonResponse({'message': 'Criado com sucesso'})
+            return JsonResponse(response_data)
 
         except Exception as e:
             # Em caso de qualquer exceção, retorne uma resposta de erro
