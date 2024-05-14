@@ -58,7 +58,7 @@ class Skill(models.Model):
 class Graphic(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=100)
-    type = models.CharField(max_length=20, default='Graphic')
+    type = models.CharField(max_length=20, default='graphic')
     description = models.TextField()
     percentage = models.FloatField()
     color = models.CharField(max_length=7)  # código de cor será fornecido como uma string hexadecimal, ex: "#000000"
@@ -68,7 +68,7 @@ class Graphic(models.Model):
 class Topic(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=100)
-    type = models.CharField(max_length=20, default='Topic')
+    type = models.CharField(max_length=20, default='topics')
     description = models.TextField()
     topics = models.JSONField()  # Armazenar os tópicos como um campo JSON
     created_at = models.DateTimeField(auto_now_add=True)
