@@ -508,7 +508,7 @@ def create_key(request, id):
 
             # Crie as habilidades
             for skill_name in data.get('skills', []):
-                Skill.objects.create(user=user, name=skill_name)
+                Skill.objects.create(user=user, **skill_name)
 
             # Crie os tópicos personalizados
             for custom_data in data.get('Custom', []):
